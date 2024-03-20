@@ -30,4 +30,8 @@
   
 	rails db:migrate RAILS_ENV=development
 
- 6.http://localhost:3000/ にアクセス
+6.http://localhost:3000/ にアクセス
+
+7.起動中のコンテナを落とす
+	
+ 	docker-compose down
