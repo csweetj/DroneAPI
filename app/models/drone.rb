@@ -2,7 +2,7 @@ class Drone < ApplicationRecord
   # DBテーブル関連付け
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
   
-  has_many :flights
+  has_many :flights, foreign_key: 'drone_registration_id', primary_key: 'drone_registration_id'
   
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
   # DBテーブル関連付け
@@ -12,11 +12,11 @@ class Drone < ApplicationRecord
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
   
   # ドローンID：入力必須
-  #「AJU」以降13文字の英数字が続く
+  #「JU」以降13文字の英数字が続く
   validates :drone_registration_id, 
   presence: true, format: { 
     with: /\AJU[\dA-Z]{11}\z/, 
-    message: "はAJUから始まる13文字の英数字でなければなりません" 
+    message: "はJUから始まる13文字の英数字でなければなりません" 
   }
 
   # ドローンの総飛行時間：秒数として保存し、必ず0秒以上である
