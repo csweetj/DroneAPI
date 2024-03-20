@@ -2,7 +2,7 @@ class Flight < ApplicationRecord
   # DBテーブル関連付け
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
-  belongs_to :drone
+  belongs_to :drone, foreign_key: 'drone_registration_id', primary_key: 'drone_registration_id'
   
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
   # DBテーブル関連付け
@@ -22,11 +22,11 @@ class Flight < ApplicationRecord
   #＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 
   # ドローンID：入力必須
-  # 「AJU」以降13文字の英数字が続く
+  # 「JU」以降13文字の英数字が続く
   validates :drone_registration_id, 
   presence: true, format: { 
     with: /\AJU[\dA-Z]{11}\z/, 
-    message: "はAJUから始まる13文字の英数字でなければなりません" 
+    message: "はJUから始まる13文字の英数字でなければなりません" 
   }
   
   # パイロットID：入力必須
@@ -85,11 +85,9 @@ class Flight < ApplicationRecord
 
   def unique_flight_time_for_drone
     # 同じ機体の他の飛行記録を検索
-    overlapping_flights = Drone.find_by(drone_registration_id: drone_registration_id)
-    .flights.where.not(id: id).where(
-      "(? BETWEEN take_off_time AND landing_time) OR (? BETWEEN take_off_time AND landing_time)",
-      take_off_time, landing_time
-    )
+    overlapping_flights = Flight.where(drone_registration_id: drone_registration_id).where.not(id: id)
+    .where("(take_off_time BETWEEN ? AND ?) OR (landing_time BETWEEN ? AND ?)",
+           take_off_time, landing_time, take_off_time, landing_time)
 
     if overlapping_flights.exists?
       errors.add(:base, "同じ機体が重複飛行しています")
