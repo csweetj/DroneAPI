@@ -19,6 +19,11 @@
  >	MYSQL_USER = "user"
  >	
  >	MYSQL_PASSWORD = "1234abcd"
+ >
+ >	BASIC_AUTH_USERNAME="user"
+ >
+ >	BASIC_AUTH_PASSWORD="1234abcd"
+
 
 4.dockerコンテナをビルド、実行
   
