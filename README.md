@@ -1,24 +1,33 @@
-# README
+# ローカル環境起動手順
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+1.リポジトリをローカルにClone
+  
+	git clone https://github.com/csweetj/DroneAPI.git
 
-Things you may want to cover:
+2.ルートディレクトリーに移動し、ルートディレクトリに.envファイルを作成
+  
+	cd DroneAPI
 
-* Ruby version
+ 	touch .env
 
-* System dependencies
+3.envファイルの中身に下記を記載
+ 
+ >	MYSQL_PASSWORD = "1234abcd"
+ >	
+ >	MYSQL_DATABASE = "drone_api_production"
+ >	
+ >	MYSQL_USER = "user"
+ >	
+ >	MYSQL_PASSWORD = "1234abcd"
 
-* Configuration
+4.dockerコンテナをビルド、実行
+  
+	docker-compose up -d
 
-* Database creation
+5.稼働中のコンテナに入り、DBをマイグレーション
+  
+	docker exec -it droneapi-web-1 bash
+  
+	rails db:migrate RAILS_ENV=development
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ 6.http://localhost:3000/ にアクセス
