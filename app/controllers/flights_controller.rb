@@ -22,14 +22,21 @@ class FlightsController < ApplicationController
   def create
     saved_flights = []
     error_messages = []
+    
+    # パラメータをラップ
+    params[:flights] = JSON.parse(request.body.read)
 
-    params[:flights] = JSON.parse(request.raw_post) # パラメータをラップ
+    # 同じドローンに対し、重複した飛行期間がないかをチェック
+    unless flights_params_unique?(params[:flights])
+      render json: { error: "同じドローンIDで重複した時間帯での飛行が検出されました。" }, status: :unprocessable_entity
+      return
+    end
 
     ActiveRecord::Base.transaction do
       params[:flights].each do |flight_param|
-        drone = Drone.find_by(drone_registration_id: flight_param[:droneRegistrationId].to_s)
+        drone = Drone.find_by(drone_registration_id: flight_param[:droneRegistrationId])
         unless drone
-          drone = Drone.create(drone_registration_id: flight_param[:droneRegistrationId].to_s)
+          drone = Drone.create(drone_registration_id: flight_param[:droneRegistrationId])
         end
         
         flight = drone.flights.build(
@@ -59,6 +66,20 @@ class FlightsController < ApplicationController
       return
     end  
     # すべて成功した場合は成功レスポンスを返す
-    render json: { message: "飛行記録が正しく保存されました", flight_ids: saved_flights.map(&:drone_registration_id) }, status: :created
+    render json: { message: "飛行記録が正しく保存されました", drone_registration_id: saved_flights.map(&:drone_registration_id) }, status: :created
+  end
+
+  private # 補助メソッド
+    # リクエスト内のフライト間で重複がないか確認するメソッド
+  def flights_params_unique?(flights_params)
+    if flights_params.is_a?(Array)
+      flights_params.combination(2).none? do |f1, f2|
+        same_drone = f1["droneRegistrationId"] == f2["droneRegistrationId"]
+        overlap = f1["landingTime"] > f2["takeOffTime"] && f2["landingTime"] > f1["takeOffTime"]
+        same_drone && overlap
+      end
+    else
+      return true
+    end
   end
 end
