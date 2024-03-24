@@ -97,7 +97,37 @@ RSpec.describe FlightsController, type: :request do
       let(:invalid_pilot_id_data) do
         [{
           droneRegistrationId: FactoryBot.create(:drone).drone_registration_id,
-          pilotId: "ABC",
+          pilotId: "PL123",
+          takeOffLatitude: "35.787671",
+          takeOffLongitude: "137.797908",
+          landingLatitude: "35.787671",
+          landingLongitude: "137.797908",
+          takeOffTime: "2023-01-02T00:00:00Z",
+          landingTime: "2023-01-02T01:00:00Z"
+        },
+        {
+          droneRegistrationId: FactoryBot.create(:drone).drone_registration_id,
+          pilotId: "PLAAAAAAAAAAAAAAAA",
+          takeOffLatitude: "35.787671",
+          takeOffLongitude: "137.797908",
+          landingLatitude: "35.787671",
+          landingLongitude: "137.797908",
+          takeOffTime: "2023-01-02T00:00:00Z",
+          landingTime: "2023-01-02T01:00:00Z"
+        },
+        {
+          droneRegistrationId: FactoryBot.create(:drone).drone_registration_id,
+          pilotId: "XX12345678901",
+          takeOffLatitude: "35.787671",
+          takeOffLongitude: "137.797908",
+          landingLatitude: "35.787671",
+          landingLongitude: "137.797908",
+          takeOffTime: "2023-01-02T00:00:00Z",
+          landingTime: "2023-01-02T01:00:00Z"
+        },
+        {
+          droneRegistrationId: FactoryBot.create(:drone).drone_registration_id,
+          pilotId: "",
           takeOffLatitude: "35.787671",
           takeOffLongitude: "137.797908",
           landingLatitude: "35.787671",

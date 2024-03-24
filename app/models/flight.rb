@@ -30,7 +30,7 @@ class Flight < ApplicationRecord
   }
   
   # パイロットID：入力必須
-  # 「APL」以降13文字の英数字が続く
+  # 「PL」以降13文字の英数字が続く
   validates :pilot_id, 
   presence: true, format: { 
     with: /\APL[\dA-Z]{11}\z/, 
